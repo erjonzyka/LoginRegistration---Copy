@@ -1,0 +1,81 @@
+@model List<Wedding>
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" action="#">Welcome, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Home"
+                            asp-action="Profile"><strong>Home</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="NewWedding" class="nav-link text-dark">Plan a Wedding</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="LogOut" class="nav-link text-dark">Log Out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="text-center">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Wedding Of</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Guest Count</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+
+            @foreach (var item in Model)
+            {
+                <tbody>
+                    <tr>
+                        <th scope="row"><a class="de-link" asp-action="WeddingDetails" asp-controller="Home" asp-route-id="@item.WeddingId">@item.WedderOne & @item.WedderTwo </a></th>
+                        <td>@item.WeddingDate.ToString("MMM") @item.WeddingDate.Day @item.WeddingDate.Year</td>
+                        <td>@item.Associations.Count</td>
+                        <td>
+                            @{
+                                var specificAssociation = item.Associations.Any(a => a.GuestId ==  HttpContextAccessor.HttpContext.Session.GetInt32("UserId")  && a.WeddingId == item.WeddingId);
+                                if (@item.CreatorId == HttpContextAccessor.HttpContext.Session.GetInt32("UserId"))
+                                {
+                                    <a asp-action="DeleteWedding" asp-controller="Home" asp-route-id="@item.WeddingId"
+                                        class="btn btn-danger">Delete</a>
+                                }
+                                else if(!specificAssociation){
+                                    <a asp-action="Enroll" asp-controller="Home" asp-route-id="@item.WeddingId" class="btn btn-success">RSVP</a>
+                                }
+                                else{
+                                    <a asp-action="Leave" asp-controller="Home" asp-route-id="@item.WeddingId" class="btn btn-primary">Un-RSVP</a>
+                                }
+                            }
+                        </td>
+                        </tr>
+                    </tbody>
+            }
+
+
+        </table>
+    </div>
+</body>
+
+</html>

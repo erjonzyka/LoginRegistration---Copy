@@ -1,0 +1,62 @@
+@model Wedding
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" action="#">Welcome, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Home"
+                            asp-action="Profile">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="NewWedding" class="nav-link text-dark"><strong>Plan a Wedding</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="LogOut" class="nav-link text-dark">Log Out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <form  method="post" asp-action="RegisterWedding" asp-controller="Home">
+        <div class="form-group">
+            <label asp-for="WedderOne">Wedder One</label>
+            <input asp-for="WedderOne" class="form-control" id="exampleFormControlInput1">
+            <span asp-validation-for="WedderOne" class="text-danger font-italic mb-3"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="WedderTwo">Wedder Two</label>
+            <input asp-for="WedderTwo" class="form-control" id="exampleFormControlInput1">
+            <span asp-validation-for="WedderTwo" class="text-danger font-italic mb-3"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="WeddingDate">WeddingDate</label>
+            <input asp-for="WeddingDate" class="form-control" id="exampleFormControlInput1">
+            <span asp-validation-for="WeddingDate" class="text-danger font-italic mb-3"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Adress">Adress</label>
+            <input asp-for="Adress" class="form-control" id="exampleInputPassword1"
+               >
+            <span asp-validation-for="Adress" class="text-danger font-italic mb-3"></span>
+        </div>
+        <input type="hidden" asp-for="CreatorId" value=" @HttpContextAccessor.HttpContext.Session.GetInt32("UserId")">
+        <button type="submit" class="btn btn-success mt-4">Create</button>
+    </form>
+</body>
+</html>
